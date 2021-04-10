@@ -150,6 +150,12 @@ function resetHexdump(f, begin, end) {
             str = "";
         }
     }
+    if(str != "") {
+        var textnode = document.createTextNode(str);
+        var br = document.createElement("br");
+        cell.appendChild(textnode);
+        cell.appendChild(br);
+    }
 
 }
 document.querySelector('#new_file').addEventListener('click', () => {
