@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <title>Hello World123213!</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="hex.css">
+
+    </head>
+    <body>
+        <div id="root">
+            <div class="toolbar__3imRV">
+                <button type="button" id="new_file" class="toolbar-button__2myq8" accesskey="n">
+                    새 파일123</button>
+            </div>
+            <div class="statusbar__6IUj5">status bar
+
+
+                We are using Node.js <span id="node-version"></span>,
+                Chromium <span id="chrome-version"></span>,
+                and Electron <span id="electron-version"></span>.
+            </div>
+            <ul id="ul_files"></ul>
+            <!-- <div class="hex"> -->
+            <!--     <div class="hexscale" > -->
+            <!--         <span></span> -->
+            <!--         00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f -->
+            <!--     </div> -->
+                
+
+            <!--  -->
+            <!-- </div> -->
+
+
+
+
+        </div>
+        <!-- You can also require other files to run in this process -->
+        <script src="./renderer.js"></script>
+    </body>
+</html>
