@@ -1,1 +1,3 @@
-# hexhex-electron
+```
+npm i && npm run start
+```

@@ -100,7 +100,7 @@ function addFile(binary, path) {
         f.hexscroll.style.height = windowSize + "px";
         // t.style.height = "200px";
         // console.log("scrollposition: ", f.hexscroll.scrollTop);
-        var begin = Math.floor(f.hexscroll.scrollTop / 20);
+        var begin = Math.floor(f.hexscroll.scrollTop / lineHeight);
         resetOffset(f.hexoffset, begin, begin + lines);
         resetHexdump(f, begin, begin + lines); 
         resetScroll(f);
