@@ -74,7 +74,7 @@ function addFile(binary, path) {
     // li.appendChild(textnode);
 
 
-    var el = document.getElementById("root"); 
+    var el = document.getElementById("center"); 
     var node = document.createElement("div");
     var hexscroll = document.createElement("div");
     hexscroll.classList.add('hexscroll');
