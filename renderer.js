@@ -35,7 +35,9 @@ HexFile.prototype.div = null;
 HexFile.prototype.hexdump = null;
 HexFile.prototype.hexoffset = null;
 HexFile.prototype.hexscroll = null;
+HexFile.prototype.hexascii = null;
 HexFile.prototype.isactive = true; 
+HexFile.prototype.lastScroll = 0;
 HexFile.prototype.position = 0;
 HexFile.prototype.binaryData = null;
 
@@ -82,31 +84,39 @@ function addFile(binary, path) {
     var hexdump = document.createElement("div");
     hexdump.classList.add('hexdump');
 
+    var hexascii = document.createElement("div");
+    hexascii.classList.add('hexascii');
+    
+
     node.className += " hex";
     node.innerHTML += '<div class="hexscale" ><span></span>00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f    </div>';
     node.appendChild(hexscroll);
     node.appendChild(hexoffset);
     node.appendChild(hexdump);
+    node.appendChild(hexascii);
     el.appendChild(node); 
 
     f.div = node;
     f.hexscroll = hexscroll;
     f.hexoffset = hexoffset;
     f.hexdump = hexdump;
-
+    f.hexascii = hexascii;
+    f.lastScroll = -1; 
     window.setInterval(() => {
         // var t = f.hexoffset;
-        f.div.style.height = (windowSize + 20) + "px";
-        f.hexscroll.style.height = windowSize + "px";
-        // t.style.height = "200px";
-        // console.log("scrollposition: ", f.hexscroll.scrollTop);
-        var begin = Math.floor(f.hexscroll.scrollTop / lineHeight);
-        resetOffset(f.hexoffset, begin, begin + lines);
-        resetHexdump(f, begin, begin + lines); 
-        resetScroll(f);
+        if (f.lastScroll != f.hexscroll.scrollTop) {
+            f.div.style.height = (windowSize + 20) + "px";
+            f.hexscroll.style.height = windowSize + "px";
+            // t.style.height = "200px";
+            // console.log("scrollposition: ", f.hexscroll.scrollTop);
+            var begin = Math.floor(f.hexscroll.scrollTop / lineHeight);
+            resetOffset(f.hexoffset, begin, begin + lines);
+            resetHexdump(f, begin, begin + lines); 
+            resetScroll(f);
+            f.lastScroll = f.hexscroll.scrollTop;
+        }
     }, 100);
 }
-
 
 
 function resetScroll(f) {
@@ -122,7 +132,10 @@ function resetOffset(cell, begin, end) {
         var node = document.createElement("div");
         var span = document.createElement("span");
         var offset = i * 16;
-        var textnode = document.createTextNode(offset.toString(16)); 
+        var s = offset.toString(16);
+
+        var str = "00000000".substr(0, 8 - s.length) + s + " "; // binaryData[i].toString(16) + " ";
+        var textnode = document.createTextNode(str);
         node.appendChild(textnode);
         cell.appendChild(node);
         // document.getElementById("hexoffset").appendChild(node);
@@ -132,31 +145,43 @@ function resetOffset(cell, begin, end) {
 function resetHexdump(f, begin, end) {
     var cell = f.hexdump;
     while ( cell.hasChildNodes() ) { cell.removeChild( cell.firstChild ); }
+    var cell2 = f.hexascii;
+    while ( cell2.hasChildNodes() ) { cell2.removeChild( cell2.firstChild ); }
     // begin * 16;
     var str = "";
+    var asciiStr = "";
     var split = 0;
     var last = Math.min(end * 16, f.binaryData.length);
     for(var i=begin*16; i<last; i++) {
         split++;
         var s = f.binaryData[i].toString(16);
+        var asciiS = String.fromCharCode(f.binaryData[i]);
+        asciiStr += asciiS;
         
         str += "00".substr(0, 2 - s.length) + s + " "; // binaryData[i].toString(16) + " ";
         str = str.toUpperCase();
         if (split % 16 == 0) {
             var textnode = document.createTextNode(str);
             var br = document.createElement("br");
+            console.log("textnode: ", textnode);
             cell.appendChild(textnode);
             cell.appendChild(br);
+
+            var textnode2 = document.createTextNode(asciiStr);
+            f.hexascii.appendChild(textnode2);
+            f.hexascii.appendChild(document.createElement('br'));
             str = "";
+            asciiStr = "";
         }
     }
     if(str != "") {
         var textnode = document.createTextNode(str);
         var br = document.createElement("br");
         cell.appendChild(textnode);
-        cell.appendChild(br);
-    }
-
+        cell.appendChild(br); 
+        var textnode2 = document.createTextNode(asciiStr);
+        f.hexascii.appendChild(textnode2);
+    } 
 }
 document.querySelector('#new_file').addEventListener('click', () => {
     console.log(remote);
@@ -170,13 +195,7 @@ document.querySelector('#new_file').addEventListener('click', () => {
                     return;
                 } 
                 // handle the file content 
-                console.log('hex: ', typeof(data)); // .toString('hex'));
-                console.log(data); // .toString('hex'));
                 addFile(data, filepath);
-                // resetOffset(0, lines);
-                // resetHexdump(0, lines);
-                // resetScroll(); 
-                // event.sender.send('fileData', data);
             });
         }
         readFile(result.filePaths[0]);

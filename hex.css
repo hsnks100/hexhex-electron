@@ -5,11 +5,13 @@
 }
 .hexdump {
     float: left;
-    var el = document.getElementById("hexscroll"); 
     line-height: 20px;
     width: 400px;
 }
 
+.hexascii {
+    line-height: 20px;
+}
 .hexoffset {
     color: blue;
     float: left;
